@@ -153,8 +153,8 @@ namespace Pkmn.Tests
         [Test]
         public void FightWithOneTurn()
         {
-            Character pikachu = new Character(100, 50, 30, 20, TYPE.NORMAL);
-            Character bulbizarre = new Character(90, 60, 10, 200, TYPE.NORMAL);
+            Character pikachu = new Character(100, 30, 30, 20, TYPE.NORMAL);
+            Character bulbizarre = new Character(90, 40, 20, 200, TYPE.NORMAL);
             Fight f = new Fight(pikachu, bulbizarre);
             Punch p = new Punch();
 

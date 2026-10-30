@@ -66,9 +66,18 @@ namespace Pkmn
         /// Méthode enclenché par le système de combat à la fin de chaque tour
         /// Vous pouvez ajouter du contenu si besoin
         /// </summary>
-        public virtual void EndTurn()
+        public virtual void EndTurn(Character currentCharacter)
         {
-            throw new NotImplementedException();
+            RemainingTurn--;
+            currentCharacter.TakeDamage(DamageEachTurn);
+
+            if (RemainingTurn <= 0)
+            {
+                RemainingTurn = 5;
+                DamageEachTurn = 0;
+                CanAttack = true;
+                DamageOnAttack = 0f;
+            }
         }
     }
 
@@ -79,6 +88,10 @@ namespace Pkmn
     {
         public SleepStatus() : base(5, 0, false, 0f)
         {
+            RemainingTurn = 5;
+            DamageEachTurn = 0;
+            CanAttack = false;
+            DamageOnAttack = 0f;
         }
     }
 
@@ -89,6 +102,10 @@ namespace Pkmn
     {
         public BurnStatus() : base(5, 10, true, 0f)
         {
+            RemainingTurn = 5;
+            DamageEachTurn = 10;
+            CanAttack = true;
+            DamageOnAttack = 0f;
         }
     }
 
@@ -99,6 +116,21 @@ namespace Pkmn
     {
         public CrazyStatus() : base(1, 0, false, 0.3f)
         {
+            RemainingTurn = 5;
+            DamageEachTurn = 0;
+            CanAttack = false;
+            DamageOnAttack = 0.3f;
+        }
+    }
+
+    public class NoneStatus : StatusEffect
+    {
+        public NoneStatus() : base(0, 0, true, 0)
+        {
+            RemainingTurn = 0;
+            DamageEachTurn = 0;
+            CanAttack = true;
+            DamageOnAttack = 0;
         }
     }
 

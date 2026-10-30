@@ -36,6 +36,8 @@ namespace Pkmn
             _baseSpeed = baseSpeed;
             _baseType = baseType;
 
+            CurrentStatus = new NoneStatus();
+
             CurrentHealth = baseHealth;
         }
         /// <summary>
@@ -120,6 +122,19 @@ namespace Pkmn
 
             CurrentHealth -= s.Power - Defense;
 
+            if (s.Status == StatusPotential.BURN)
+            {
+                CurrentStatus = new BurnStatus();
+            }
+            if (s.Status == StatusPotential.SLEEP)
+            {
+                CurrentStatus = new SleepStatus();
+            }
+            if (s.Status == StatusPotential.CRAZY)
+            {
+                CurrentStatus = new CrazyStatus();
+            }
+
             ClampHealth();
         }
 
@@ -127,7 +142,14 @@ namespace Pkmn
         {
             if (s == null) throw new ArgumentNullException();
 
-            return new UsedAttack(s, Attack);
+            Skill usedAttack;
+
+            if (CurrentStatus.CanAttack) usedAttack = new UsedAttack(s, Attack);
+            usedAttack = new NullAttack();
+
+            TakeDamage((int)(usedAttack.Power * CurrentStatus.DamageOnAttack));
+
+            return usedAttack;
         }
         /// <summary>
         /// Equipe un objet au personnage
@@ -162,6 +184,12 @@ namespace Pkmn
         {
             if (CurrentHealth < 0) CurrentHealth = 0;
             if (CurrentHealth > MaxHealth) CurrentHealth = MaxHealth;
+        }
+
+        public void TakeDamage(int amount)
+        {
+            CurrentHealth -= amount;
+            ClampHealth();
         }
     }
 }

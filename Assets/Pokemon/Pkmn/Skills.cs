@@ -51,4 +51,10 @@ namespace Pkmn
     {
         public UsedAttack(Skill baseSkill, int characterAttack) :base(baseSkill.Type, baseSkill.Power + characterAttack, baseSkill.Status) { }
     }
+
+    public class NullAttack : Skill
+
+        {
+            public NullAttack() : base(TYPE.NORMAL, 0, StatusPotential.NONE) { }
+        }
 }

@@ -28,26 +28,37 @@ namespace Pkmn
         /// <exception cref="ArgumentNullException">si une des deux attaques est null</exception>
         public void ExecuteTurn(Skill skillFromCharacter1, Skill skillFromCharacter2)
         {
-            Character firstToPlay = Character1;
-            Character secondToPlay = Character2;
+            bool character1GoesFirst = true;
+
             if (Character2.Speed > Character1.Speed)
+                character1GoesFirst = false;
+
+            if (Character2.CurrentEquipment != null)
+                if (Character2.CurrentEquipment.Prioritize) 
+                    character1GoesFirst = false;
+
+            if (Character1.CurrentEquipment != null) 
+                if (Character1.CurrentEquipment.Prioritize) 
+                    character1GoesFirst = true;
+
+
+            switch (character1GoesFirst)
             {
-                firstToPlay = Character2;
-                secondToPlay = Character1;
+                case true:
+                    Character2.ReceiveAttack(Character1.UseAttack(skillFromCharacter1));
+                    if (Character2.IsAlive)
+                        Character1.ReceiveAttack(Character2.UseAttack(skillFromCharacter2));
+                    Character1.CurrentStatus.EndTurn(Character1);
+                    Character2.CurrentStatus.EndTurn(Character2);
+                    break;
+
+                case false:
+                    Character1.ReceiveAttack(Character2.UseAttack(skillFromCharacter2));
+                    if (Character1.IsAlive)
+                        Character2.ReceiveAttack(Character1.UseAttack(skillFromCharacter1));
+                    break;
             }
 
-            if (Character1.Speed > Character2.Speed)
-            {
-                Character2.ReceiveAttack(skillFromCharacter1);
-                if (Character2.IsAlive)
-                    Character1.ReceiveAttack(skillFromCharacter2);
-            }
-            else
-            {
-                Character1.ReceiveAttack(skillFromCharacter2);
-                if (Character1.IsAlive)
-                    Character2.ReceiveAttack(skillFromCharacter1);
-            }
         }
 
     }
